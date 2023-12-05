@@ -1,7 +1,7 @@
 import os
 import hashlib
-
-DIRECTORIES = ['/usr']
+import pathlib
+DIRECTORIES = ['/home/sbiyagu/test']
 
 # Directory to store baseline data
 
@@ -31,15 +31,16 @@ def initiate_original_baseline():
   for directory in DIRECTORIES:
     baseline_data = {}
     for root, fpath, files in os.walk(directory):
-      for file in files:
+      for file in files:  
         file_path = os.path.join(root, file)
         if os.path.islink(file_path) or os.stat(file_path).st_nlink>1:
             continue
-        print(root,file,file_path)
         hash_value = compute_hash(file_path)
         baseline_data[file_path] = hash_value
-    with open(os.path.join(BASELINE_DIR, directory.strip('/')) + '.txt', 'w') as baseline_file:
+        directory_path=pathlib.Path(directory.strip('/')).parts
+    with open(os.path.join(BASELINE_DIR, directory_path[-1]) + '.txt', 'w') as baseline_file:
       for file_path, hash_values in baseline_data.items():
         baseline_file.write(f'{file_path} {hash_values}\n')
+    print("Successfully computed hash values for files under ",directory)
 
 initiate_original_baseline()
