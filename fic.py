@@ -5,10 +5,10 @@ import logging
 from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-
+import pathlib
 # Define the list of directories to monitor
 
-DIRECTORIES = ['/usr']
+DIRECTORIES = ['/home/sbiyagu/test']
 
 # Directory to store baseline data
 
@@ -39,7 +39,8 @@ def validate_checksums():
     dir_id+=1
     print(f'Current directory being monitored :{directory}.....')
     print(f'Iterating through the whole directory tree.....') 
-    with open(os.path.join(BASELINE_DIR, directory.strip('/')) + '.txt', 'r') as baseline_file:
+    directory_path=pathlib.Path(directory.strip('/')).parts
+    with open(os.path.join(BASELINE_DIR, directory_path[-1]) + '.txt', 'r') as baseline_file:
       baseline_list  = [line.split() for line in baseline_file.read().splitlines()]
       baseline_filtered =[]
       for ele in baseline_list:
